@@ -1,9 +1,8 @@
 from splinter import Browser
 from bs4 import BeautifulSoup as bs
-import pandas as pd 
-import requests
 import time
-
+import pandas as pd 
+import cssutils
 
 def init_browser():
     # @NOTE: Replace the path with your actual path to the chromedriver
@@ -11,13 +10,14 @@ def init_browser():
     return Browser("chrome", **executable_path, headless=False)
 
 
-def scrape():
+def scrape_info():
     browser = init_browser()
     
     mars_data = {}
 
     url = "https://mars.nasa.gov/news/"
     browser.visit(url)
+    time.sleep(5)
 
     html = browser.html
     soup = bs(html, "html.parser")
@@ -33,6 +33,7 @@ def scrape():
     #JPL MARS SPACE IMAGES - FEATURED IMAGES
     img_url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     browser.visit(img_url)
+    time.sleep(5)
 
     img_html = browser.html
     img_soup = bs(img_html, 'html.parser')
@@ -48,6 +49,8 @@ def scrape():
     #MARS FACTS
     facts_url = 'https://space-facts.com/mars/' 
     browser.visit(facts_url)
+    time.sleep(5)
+
     facts_table = pd.read_html(facts_url) 
 
     facts_table[2].columns = ['Description', 'Value']
@@ -58,6 +61,7 @@ def scrape():
     #MARS HEMISPHERES
     hemi_img_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
     browser.visit(hemi_img_url)
+    time.sleep(5)
 
     hemi_img_html = browser.html
     hemi_img_soup = bs(hemi_img_html, 'html.parser')
@@ -92,6 +96,10 @@ def scrape():
         'table':facts_table[2],
         'hemisphere_image_urls': hemisphere_image_urls
     }
+    
     browser.quit()
     
     return mars_data
+
+if __name__ == '__main__':
+    scrape()
