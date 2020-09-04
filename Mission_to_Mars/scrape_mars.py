@@ -9,11 +9,10 @@ def init_browser():
     executable_path = {"executable_path": "D:\chromedriver"}
     return Browser("chrome", **executable_path, headless=False)
 
-
 def scrape_info():
     browser = init_browser()
     
-    mars_data = {}
+    data = {}
 
     url = "https://mars.nasa.gov/news/"
     browser.visit(url)
@@ -55,8 +54,8 @@ def scrape_info():
 
     facts_table[2].columns = ['Description', 'Value']
     facts_table[2].set_index('Description', inplace=True)
-    facts_table[2] #RETURN
-
+    facts_table[2] 
+    table=facts_table[2].to_html('facts_table.html') #RETURN
 
     #MARS HEMISPHERES
     hemi_img_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
@@ -88,18 +87,18 @@ def scrape_info():
 
 
     #ADD INFORMATION TO DICTIONARY
-    mars_data = {
+    data = {
         'news_date': news_date, 
         'news_title': news_title,
-        'news_p':news_p,
+        'news_p': news_p,
         'featured_image_url': featured_image_url, 
-        'table':facts_table[2],
+        'table': table,
         'hemisphere_image_urls': hemisphere_image_urls
     }
     
     browser.quit()
     
-    return mars_data
+    return data
 
 if __name__ == '__main__':
     scrape()
